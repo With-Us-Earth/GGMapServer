@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ggmapserver
+  labels:
+    app: ggmapserver
+spec:
+  replicas: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ggmapserver
+  template:
+    metadata:
+      labels:
+        app: ggmapserver
+        tier: ggmapserver
+    spec:
+      containers:
+      - name: ggmapserver
+        image: twomal2/ggmapserver:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+          name: ggmapserver
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ggmapserver
+  labels:
+    app: ggmapserver
+spec:
+  ports:
+  - port: 80
+    targetPort: 5000
+  selector:
+    app: ggmapserver
+    tier: ggmapserver
+  type: LoadBalancer
